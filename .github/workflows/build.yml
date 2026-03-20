@@ -12,7 +12,6 @@ steps:
 uses: dtolnay/rust-toolchain@stable
 with:
 targets: armv7-unknown-linux-gnueabihf
-
 - name: Install Cross Compiler
 run: |
 sudo apt-get update
