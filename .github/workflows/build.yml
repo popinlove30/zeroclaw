@@ -3,23 +3,31 @@ name: Build ARMv7 Binary
 on: [push, pull_request]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+build:
+runs-on: ubuntu-latest
+steps:
+- uses: actions/checkout@v4
 
-      - name: Install Rust Toolchain
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: armv7-unknown-linux-gnueabihf
+- name: Install Rust Toolchain
+uses: dtolnay/rust-toolchain@stable
+with:
+targets: armv7-unknown-linux-gnueabihf
 
-      - name: Build for ARMv7
-        run: |
-          sudo apt-get update && sudo apt-get install -y gcc-arm-linux-gnueabihf
-          cargo build --release --target armv7-unknown-linux-gnueabihf
+- name: Install Cross Compiler
+run: |
+sudo apt-get update
+sudo apt-get install -y gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf
 
-      - name: Upload Binary
-        uses: actions/upload-artifact@v4
-        with:
-          name: zeroclaw-armv7
-          path: target/armv7-unknown-linux-gnueabihf/release/zeroclaw
+- name: Build for ARMv7
+env:
+CARGO_TARGET_ARMV7_UNKNOWN_LINUX_GNUEABIHF_LINKER: arm-linux-gnueabihf-gcc
+CC: arm-linux-gnueabihf-gcc
+CXX: arm-linux-gnueabihf-g++
+run: |
+cargo build --release --target armv7-unknown-linux-gnueabihf
+
+- name: Upload Binary
+uses: actions/upload-artifact@v4
+with:
+name: zeroclaw-armv7
+path: target/armv7-unknown-linux-gnueabihf/release/zeroclaw
